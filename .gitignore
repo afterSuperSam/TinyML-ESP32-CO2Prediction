@@ -18,3 +18,5 @@ data/co2-diagnostic-*.log
 .build/
 **/__pycache__/
 *.pyc
+pcb/
+课题.docx

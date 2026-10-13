@@ -1,0 +1,121 @@
+{
+  "version": "1.2.0",
+  "features": [
+    "co2_ppm",
+    "temperature_c",
+    "humidity_pct"
+  ],
+  "flatten_order": "oldest_to_newest_interleaved",
+  "window_minutes": 20,
+  "horizons_minutes": [
+    5,
+    15
+  ],
+  "feature_mean": [
+    1066.8096923828125,
+    25.169240951538086,
+    50.97821807861328
+  ],
+  "feature_scale": [
+    544.331787109375,
+    2.9932491779327393,
+    11.781350135803223
+  ],
+  "target_mean": [
+    -7.579899787902832,
+    -25.680986404418945
+  ],
+  "target_scale": [
+    93.22877502441406,
+    249.52833557128906
+  ],
+  "source_kind": "synthetic_chamber",
+  "configuration": {
+    "dataset": {
+      "url": "https://archive.ics.uci.edu/static/public/357/occupancy+detection.zip",
+      "sha256": "4ae3f46aa98eedff564a9f6924d1635173e2fd2c816004342a9be93076d3a81a",
+      "archive": "data/uci/occupancy.zip",
+      "csv": "data/uci/environment.csv",
+      "bounds": [
+        [
+          0,
+          10000
+        ],
+        [
+          -40,
+          85
+        ],
+        [
+          0,
+          100
+        ]
+      ],
+      "timestamp_tolerance_seconds": 1
+    },
+    "window_minutes": 20,
+    "horizons_minutes": [
+      5,
+      15
+    ],
+    "split_fractions": [
+      0.6,
+      0.2,
+      0.2
+    ],
+    "network": {
+      "hidden_units": [
+        32,
+        16
+      ],
+      "seed": 42,
+      "epochs": 120,
+      "batch_size": 128,
+      "learning_rate": 0.001,
+      "patience": 15,
+      "minimum_improvement": 0.0001,
+      "weight_decay": 0.0001
+    },
+    "ridge_penalty": 10.0,
+    "calibration_samples": 512,
+    "experimental_threshold_ppm": 1500,
+    "output": "model/artifacts/rapid-rise",
+    "screen_replay": {
+      "start": "2015-02-17T08:00:00",
+      "minutes": 720
+    },
+    "firmware": {
+      "directory": "model/artifacts/rapid-rise",
+      "assets_directory": "model/artifacts/rapid-rise",
+      "tensor_arena_bytes": 16384,
+      "serial_baud": 115200,
+      "replay_interval_ms": 2000,
+      "self_test_tolerance_ppm": 3.0
+    }
+  },
+  "parameters": 2514,
+  "operations": [
+    "FULLY_CONNECTED",
+    "FULLY_CONNECTED",
+    "FULLY_CONNECTED"
+  ],
+  "input_quantization": [
+    0.020510151982307434,
+    -42
+  ],
+  "output_quantization": [
+    0.02934618853032589,
+    -6
+  ],
+  "int8_sha256": "34a65a5a89d7c1e2ecf89f671a1510faee4f2e9fe93719c22be9c06a857b163a",
+  "float_sha256": "88856e5b7a841fdaeeb197fb8c8e652fc9e845cc5c11d0ebb30742e9c72c19da",
+  "training_feature_min": [
+    378.94744873046875,
+    19.952356338500977,
+    30.239356994628906
+  ],
+  "training_feature_max": [
+    2955.51904296875,
+    30.21883773803711,
+    70.9641342163086
+  ]
+}

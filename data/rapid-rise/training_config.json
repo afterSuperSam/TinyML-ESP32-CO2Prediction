@@ -1,0 +1,67 @@
+{
+  "dataset": {
+    "url": "https://archive.ics.uci.edu/static/public/357/occupancy+detection.zip",
+    "sha256": "4ae3f46aa98eedff564a9f6924d1635173e2fd2c816004342a9be93076d3a81a",
+    "archive": "data/uci/occupancy.zip",
+    "csv": "data/uci/environment.csv",
+    "bounds": [
+      [
+        0,
+        10000
+      ],
+      [
+        -40,
+        85
+      ],
+      [
+        0,
+        100
+      ]
+    ],
+    "timestamp_tolerance_seconds": 1
+  },
+  "features": [
+    "co2_ppm",
+    "temperature_c",
+    "humidity_pct"
+  ],
+  "window_minutes": 20,
+  "horizons_minutes": [
+    5,
+    15
+  ],
+  "split_fractions": [
+    0.6,
+    0.2,
+    0.2
+  ],
+  "network": {
+    "hidden_units": [
+      32,
+      16
+    ],
+    "seed": 42,
+    "epochs": 120,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "patience": 15,
+    "minimum_improvement": 0.0001,
+    "weight_decay": 0.0001
+  },
+  "ridge_penalty": 10.0,
+  "calibration_samples": 512,
+  "experimental_threshold_ppm": 1500,
+  "output": "model/artifacts/rapid-rise",
+  "screen_replay": {
+    "start": "2015-02-17T08:00:00",
+    "minutes": 720
+  },
+  "firmware": {
+    "directory": "model/artifacts/rapid-rise",
+    "assets_directory": "model/artifacts/rapid-rise",
+    "tensor_arena_bytes": 16384,
+    "serial_baud": 115200,
+    "replay_interval_ms": 2000,
+    "self_test_tolerance_ppm": 3.0
+  }
+}

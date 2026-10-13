@@ -1,0 +1,122 @@
+{
+  "training_config": "model/config.json",
+  "data_directory": "data/rapid-rise",
+  "output_directory": "model/artifacts/rapid-rise",
+  "seed": 20261011,
+  "session_count": 150,
+  "session_minutes": 150,
+  "simulation_step_seconds": 6,
+  "synthetic_start_date": "2026-01-01",
+  "volume_liters": [
+    40,
+    60
+  ],
+  "ambient_co2_ppm": [
+    410,
+    480
+  ],
+  "initial_co2_ppm": [
+    450,
+    1300
+  ],
+  "static_co2_ppm": [
+    1800,
+    3000
+  ],
+  "leakage_per_minute": [
+    0.002,
+    0.02
+  ],
+  "source_ml_per_minute": [
+    0.6,
+    1.8
+  ],
+  "fast_source_ml_per_minute": [
+    2,
+    4
+  ],
+  "maximum_release_ml": 90,
+  "release_start_minute": [
+    22,
+    32
+  ],
+  "release_duration_minutes": [
+    35,
+    65
+  ],
+  "ventilation_start_minute": [
+    48,
+    68
+  ],
+  "ventilation_stop_minute": [
+    105,
+    125
+  ],
+  "fan_exchange_per_minute": [
+    0.05,
+    0.15
+  ],
+  "opening_exchange_per_minute": [
+    0.02,
+    0.07
+  ],
+  "pulse_spacing_minutes": 18,
+  "pulse_count": 3,
+  "pulse_release_ml": [
+    10,
+    25
+  ],
+  "pulse_decay_minutes": [
+    4,
+    9
+  ],
+  "sensor_response_seconds": 60,
+  "co2_noise_standard_deviation_ppm": 5,
+  "co2_bias_ppm": [
+    -25,
+    25
+  ],
+  "temperature_c": [
+    20,
+    30
+  ],
+  "humidity_pct": [
+    30,
+    70
+  ],
+  "temperature_drift_c_per_minute": [
+    -0.004,
+    0.004
+  ],
+  "humidity_drift_pct_per_minute": [
+    -0.02,
+    0.02
+  ],
+  "temperature_noise_c": 0.03,
+  "humidity_noise_pct": 0.1,
+  "scenarios": [
+    "continuous_release",
+    "fast_release_stop",
+    "pulse_release",
+    "fan_change",
+    "opening_change",
+    "static_decay"
+  ],
+  "horizons_minutes": [
+    5,
+    15
+  ],
+  "epochs": 120,
+  "patience": 15,
+  "rapid_rise_history_minutes": 5,
+  "rapid_rise_change_ppm": 100,
+  "operating_co2_ppm": [
+    400,
+    5000
+  ],
+  "features": [
+    "co2_ppm",
+    "temperature_c",
+    "humidity_pct"
+  ]
+}

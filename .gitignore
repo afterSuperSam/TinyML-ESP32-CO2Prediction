@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.pyc
+.build/
+model/artifacts/co2/saved_model/
+
+
+# 本机运行与设备导出
+*.log
+data/*.bin
+data/*.partial
+data/co2-recording-*.csv
+data/device-check-*.log
+data/co2-diagnostic-*.log
+
+# 本地缓存与构建产物
+.venv/
+.build/
+**/__pycache__/
+*.pyc

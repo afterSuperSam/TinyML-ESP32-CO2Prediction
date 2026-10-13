@@ -1,0 +1,4 @@
+{
+  "fqbn": "esp32:esp32:esp32s3:USBMode=hwcdc,CDCOnBoot=cdc,UploadMode=default,FlashSize=16M,PartitionScheme=custom",
+  "jobs": 4
+}

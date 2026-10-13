@@ -1,0 +1,415 @@
+{
+  "source_kind": "public_office_measurements",
+  "criterion": "past 5 minute CO2 rise >= 100 ppm; continuous valid samples",
+  "raw_rows": 20560,
+  "rapid_rise_origins": 81,
+  "maximum_change_ppm": 1117.5,
+  "origins": [
+    {
+      "end_timestamp": "2015-02-09T14:27:00",
+      "past_change_ppm": 198.4166259765625,
+      "current_co2_ppm": 1457.6666259765625
+    },
+    {
+      "end_timestamp": "2015-02-09T14:28:00",
+      "past_change_ppm": 162.75,
+      "current_co2_ppm": 1423.75
+    },
+    {
+      "end_timestamp": "2015-02-09T21:49:00",
+      "past_change_ppm": 107.0,
+      "current_co2_ppm": 759.0
+    },
+    {
+      "end_timestamp": "2015-02-09T22:11:00",
+      "past_change_ppm": 739.5,
+      "current_co2_ppm": 1365.0
+    },
+    {
+      "end_timestamp": "2015-02-09T22:12:00",
+      "past_change_ppm": 277.0,
+      "current_co2_ppm": 894.0
+    },
+    {
+      "end_timestamp": "2015-02-09T22:13:00",
+      "past_change_ppm": 486.8333740234375,
+      "current_co2_ppm": 1101.3333740234375
+    },
+    {
+      "end_timestamp": "2015-02-09T22:14:00",
+      "past_change_ppm": 552.0,
+      "current_co2_ppm": 1165.0
+    },
+    {
+      "end_timestamp": "2015-02-11T18:50:00",
+      "past_change_ppm": 115.5,
+      "current_co2_ppm": 720.5
+    },
+    {
+      "end_timestamp": "2015-02-11T18:51:00",
+      "past_change_ppm": 1117.5,
+      "current_co2_ppm": 1760.0
+    },
+    {
+      "end_timestamp": "2015-02-11T18:52:00",
+      "past_change_ppm": 1060.75,
+      "current_co2_ppm": 1665.0
+    },
+    {
+      "end_timestamp": "2015-02-11T18:53:00",
+      "past_change_ppm": 659.6666259765625,
+      "current_co2_ppm": 1255.6666259765625
+    },
+    {
+      "end_timestamp": "2015-02-11T18:54:00",
+      "past_change_ppm": 112.0,
+      "current_co2_ppm": 724.0
+    },
+    {
+      "end_timestamp": "2015-02-11T19:02:00",
+      "past_change_ppm": 170.0,
+      "current_co2_ppm": 752.0
+    },
+    {
+      "end_timestamp": "2015-02-11T19:09:00",
+      "past_change_ppm": 105.66668701171875,
+      "current_co2_ppm": 695.0
+    },
+    {
+      "end_timestamp": "2015-02-12T03:43:00",
+      "past_change_ppm": 345.66668701171875,
+      "current_co2_ppm": 955.6666870117188
+    },
+    {
+      "end_timestamp": "2015-02-12T03:44:00",
+      "past_change_ppm": 352.0,
+      "current_co2_ppm": 965.0
+    },
+    {
+      "end_timestamp": "2015-02-12T03:45:00",
+      "past_change_ppm": 124.0,
+      "current_co2_ppm": 740.0
+    },
+    {
+      "end_timestamp": "2015-02-12T07:51:00",
+      "past_change_ppm": 123.5,
+      "current_co2_ppm": 843.5
+    },
+    {
+      "end_timestamp": "2015-02-12T07:52:00",
+      "past_change_ppm": 119.5,
+      "current_co2_ppm": 844.0
+    },
+    {
+      "end_timestamp": "2015-02-12T08:18:00",
+      "past_change_ppm": 233.75,
+      "current_co2_ppm": 1099.0
+    },
+    {
+      "end_timestamp": "2015-02-12T08:19:00",
+      "past_change_ppm": 557.0000610351562,
+      "current_co2_ppm": 1422.3333740234375
+    },
+    {
+      "end_timestamp": "2015-02-12T08:22:00",
+      "past_change_ppm": 124.5833740234375,
+      "current_co2_ppm": 1051.3333740234375
+    },
+    {
+      "end_timestamp": "2015-02-12T08:56:00",
+      "past_change_ppm": 102.16668701171875,
+      "current_co2_ppm": 827.6666870117188
+    },
+    {
+      "end_timestamp": "2015-02-12T09:02:00",
+      "past_change_ppm": 116.0,
+      "current_co2_ppm": 892.0
+    },
+    {
+      "end_timestamp": "2015-02-12T09:03:00",
+      "past_change_ppm": 115.25,
+      "current_co2_ppm": 902.0
+    },
+    {
+      "end_timestamp": "2015-02-12T11:19:00",
+      "past_change_ppm": 175.0,
+      "current_co2_ppm": 969.5
+    },
+    {
+      "end_timestamp": "2015-02-12T11:25:00",
+      "past_change_ppm": 130.5,
+      "current_co2_ppm": 921.5
+    },
+    {
+      "end_timestamp": "2015-02-12T11:26:00",
+      "past_change_ppm": 145.5,
+      "current_co2_ppm": 902.25
+    },
+    {
+      "end_timestamp": "2015-02-12T11:27:00",
+      "past_change_ppm": 120.25,
+      "current_co2_ppm": 877.5
+    },
+    {
+      "end_timestamp": "2015-02-12T11:28:00",
+      "past_change_ppm": 119.75,
+      "current_co2_ppm": 880.25
+    },
+    {
+      "end_timestamp": "2015-02-12T11:29:00",
+      "past_change_ppm": 104.33331298828125,
+      "current_co2_ppm": 866.0
+    },
+    {
+      "end_timestamp": "2015-02-12T12:46:00",
+      "past_change_ppm": 114.41668701171875,
+      "current_co2_ppm": 840.75
+    },
+    {
+      "end_timestamp": "2015-02-16T01:34:00",
+      "past_change_ppm": 177.16668701171875,
+      "current_co2_ppm": 1018.5
+    },
+    {
+      "end_timestamp": "2015-02-16T01:35:00",
+      "past_change_ppm": 107.16668701171875,
+      "current_co2_ppm": 953.5
+    },
+    {
+      "end_timestamp": "2015-02-17T12:16:00",
+      "past_change_ppm": 106.25,
+      "current_co2_ppm": 1377.75
+    },
+    {
+      "end_timestamp": "2015-02-17T12:17:00",
+      "past_change_ppm": 169.5,
+      "current_co2_ppm": 1445.0
+    },
+    {
+      "end_timestamp": "2015-02-17T12:18:00",
+      "past_change_ppm": 204.0,
+      "current_co2_ppm": 1506.0
+    },
+    {
+      "end_timestamp": "2015-02-17T17:30:00",
+      "past_change_ppm": 122.5,
+      "current_co2_ppm": 1649.0
+    },
+    {
+      "end_timestamp": "2015-02-17T17:31:00",
+      "past_change_ppm": 118.5,
+      "current_co2_ppm": 1653.0
+    },
+    {
+      "end_timestamp": "2015-02-17T17:32:00",
+      "past_change_ppm": 101.75,
+      "current_co2_ppm": 1690.5
+    },
+    {
+      "end_timestamp": "2015-02-17T17:33:00",
+      "past_change_ppm": 145.6666259765625,
+      "current_co2_ppm": 1739.6666259765625
+    },
+    {
+      "end_timestamp": "2015-02-17T17:34:00",
+      "past_change_ppm": 172.4166259765625,
+      "current_co2_ppm": 1757.75
+    },
+    {
+      "end_timestamp": "2015-02-17T17:35:00",
+      "past_change_ppm": 130.0,
+      "current_co2_ppm": 1779.0
+    },
+    {
+      "end_timestamp": "2015-02-17T17:36:00",
+      "past_change_ppm": 125.0,
+      "current_co2_ppm": 1778.0
+    },
+    {
+      "end_timestamp": "2015-02-17T21:22:00",
+      "past_change_ppm": 147.3333740234375,
+      "current_co2_ppm": 1684.3333740234375
+    },
+    {
+      "end_timestamp": "2015-02-17T21:23:00",
+      "past_change_ppm": 206.5,
+      "current_co2_ppm": 1744.0
+    },
+    {
+      "end_timestamp": "2015-02-17T21:24:00",
+      "past_change_ppm": 189.5,
+      "current_co2_ppm": 1735.5
+    },
+    {
+      "end_timestamp": "2015-02-17T21:25:00",
+      "past_change_ppm": 196.5,
+      "current_co2_ppm": 1741.5
+    },
+    {
+      "end_timestamp": "2015-02-17T21:26:00",
+      "past_change_ppm": 172.1666259765625,
+      "current_co2_ppm": 1739.5
+    },
+    {
+      "end_timestamp": "2015-02-17T22:08:00",
+      "past_change_ppm": 104.5,
+      "current_co2_ppm": 1628.5
+    },
+    {
+      "end_timestamp": "2015-02-17T22:24:00",
+      "past_change_ppm": 185.5,
+      "current_co2_ppm": 1597.5
+    },
+    {
+      "end_timestamp": "2015-02-17T22:30:00",
+      "past_change_ppm": 167.0,
+      "current_co2_ppm": 1661.0
+    },
+    {
+      "end_timestamp": "2015-02-17T22:31:00",
+      "past_change_ppm": 162.5,
+      "current_co2_ppm": 1466.0
+    },
+    {
+      "end_timestamp": "2015-02-17T22:32:00",
+      "past_change_ppm": 159.5,
+      "current_co2_ppm": 1454.5
+    },
+    {
+      "end_timestamp": "2015-02-17T22:33:00",
+      "past_change_ppm": 156.5,
+      "current_co2_ppm": 1451.5
+    },
+    {
+      "end_timestamp": "2015-02-17T22:40:00",
+      "past_change_ppm": 105.0,
+      "current_co2_ppm": 1539.5
+    },
+    {
+      "end_timestamp": "2015-02-17T22:43:00",
+      "past_change_ppm": 193.0,
+      "current_co2_ppm": 1662.6666259765625
+    },
+    {
+      "end_timestamp": "2015-02-17T22:44:00",
+      "past_change_ppm": 170.8333740234375,
+      "current_co2_ppm": 1645.5
+    },
+    {
+      "end_timestamp": "2015-02-17T22:53:00",
+      "past_change_ppm": 184.5,
+      "current_co2_ppm": 1727.0
+    },
+    {
+      "end_timestamp": "2015-02-17T22:54:00",
+      "past_change_ppm": 195.0,
+      "current_co2_ppm": 1721.0
+    },
+    {
+      "end_timestamp": "2015-02-17T22:55:00",
+      "past_change_ppm": 142.0,
+      "current_co2_ppm": 1655.0
+    },
+    {
+      "end_timestamp": "2015-02-17T22:56:00",
+      "past_change_ppm": 570.0,
+      "current_co2_ppm": 2072.0
+    },
+    {
+      "end_timestamp": "2015-02-17T22:57:00",
+      "past_change_ppm": 189.1666259765625,
+      "current_co2_ppm": 1690.6666259765625
+    },
+    {
+      "end_timestamp": "2015-02-18T00:15:00",
+      "past_change_ppm": 108.5,
+      "current_co2_ppm": 1355.0
+    },
+    {
+      "end_timestamp": "2015-02-18T00:16:00",
+      "past_change_ppm": 129.0,
+      "current_co2_ppm": 1367.5
+    },
+    {
+      "end_timestamp": "2015-02-18T00:39:00",
+      "past_change_ppm": 497.0,
+      "current_co2_ppm": 1656.5
+    },
+    {
+      "end_timestamp": "2015-02-18T00:40:00",
+      "past_change_ppm": 325.1666259765625,
+      "current_co2_ppm": 1489.6666259765625
+    },
+    {
+      "end_timestamp": "2015-02-18T00:41:00",
+      "past_change_ppm": 721.5,
+      "current_co2_ppm": 1879.5
+    },
+    {
+      "end_timestamp": "2015-02-18T00:42:00",
+      "past_change_ppm": 588.5,
+      "current_co2_ppm": 1774.0
+    },
+    {
+      "end_timestamp": "2015-02-18T00:43:00",
+      "past_change_ppm": 477.6666259765625,
+      "current_co2_ppm": 1684.0
+    },
+    {
+      "end_timestamp": "2015-02-18T01:41:00",
+      "past_change_ppm": 109.5,
+      "current_co2_ppm": 1431.5
+    },
+    {
+      "end_timestamp": "2015-02-18T01:42:00",
+      "past_change_ppm": 134.5,
+      "current_co2_ppm": 1483.0
+    },
+    {
+      "end_timestamp": "2015-02-18T01:43:00",
+      "past_change_ppm": 113.5,
+      "current_co2_ppm": 1472.0
+    },
+    {
+      "end_timestamp": "2015-02-18T01:48:00",
+      "past_change_ppm": 276.0,
+      "current_co2_ppm": 1748.0
+    },
+    {
+      "end_timestamp": "2015-02-18T01:49:00",
+      "past_change_ppm": 581.75,
+      "current_co2_ppm": 2065.75
+    },
+    {
+      "end_timestamp": "2015-02-18T01:50:00",
+      "past_change_ppm": 242.6666259765625,
+      "current_co2_ppm": 1739.0
+    },
+    {
+      "end_timestamp": "2015-02-18T01:51:00",
+      "past_change_ppm": 579.5,
+      "current_co2_ppm": 2076.5
+    },
+    {
+      "end_timestamp": "2015-02-18T01:52:00",
+      "past_change_ppm": 463.1666259765625,
+      "current_co2_ppm": 1978.6666259765625
+    },
+    {
+      "end_timestamp": "2015-02-18T03:22:00",
+      "past_change_ppm": 102.0,
+      "current_co2_ppm": 1365.0
+    },
+    {
+      "end_timestamp": "2015-02-18T09:18:00",
+      "past_change_ppm": 146.0,
+      "current_co2_ppm": 1632.0
+    },
+    {
+      "end_timestamp": "2015-02-18T09:19:00",
+      "past_change_ppm": 352.25,
+      "current_co2_ppm": 1864.0
+    }
+  ],
+  "interpretation": "Office measurements, not sealed-chamber measurements; not used for training or selection."
+}

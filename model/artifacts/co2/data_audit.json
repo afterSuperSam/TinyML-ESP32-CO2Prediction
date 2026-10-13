@@ -1,0 +1,62 @@
+{
+  "source": "data\\uci\\environment.csv",
+  "csv_sha256": "74c6dda965c87739378be8f87c0c7e66df4555c30a2da26a9e8e0072eb2b7bbf",
+  "cleaning": {
+    "raw_rows": 20560,
+    "invalid_rows": 0,
+    "duplicate_rows": 0,
+    "aligned_timestamps": 6398,
+    "unique_minutes": 20560,
+    "missing_minutes": 2181
+  },
+  "splits": {
+    "train": {
+      "first_timestamp": "2015-02-02T14:19:00",
+      "last_timestamp": "2015-02-11T23:59:00",
+      "dates": [
+        "2015-02-02",
+        "2015-02-03",
+        "2015-02-04",
+        "2015-02-05",
+        "2015-02-06",
+        "2015-02-07",
+        "2015-02-08",
+        "2015-02-09",
+        "2015-02-10",
+        "2015-02-11"
+      ],
+      "rows": 11360,
+      "candidate_origins": 13507,
+      "windows": 11258,
+      "availability": 0.8334937439846006
+    },
+    "validation": {
+      "first_timestamp": "2015-02-12T00:00:00",
+      "last_timestamp": "2015-02-14T23:59:00",
+      "dates": [
+        "2015-02-12",
+        "2015-02-13",
+        "2015-02-14"
+      ],
+      "rows": 4320,
+      "candidate_origins": 4286,
+      "windows": 4286,
+      "availability": 1.0
+    },
+    "test": {
+      "first_timestamp": "2015-02-15T00:00:00",
+      "last_timestamp": "2015-02-18T09:19:00",
+      "dates": [
+        "2015-02-15",
+        "2015-02-16",
+        "2015-02-17",
+        "2015-02-18"
+      ],
+      "rows": 4880,
+      "candidate_origins": 4846,
+      "windows": 4846,
+      "availability": 1.0
+    }
+  },
+  "policy": "split complete dates first; reject incomplete/invalid/discontinuous spans; training-only normalization"
+}

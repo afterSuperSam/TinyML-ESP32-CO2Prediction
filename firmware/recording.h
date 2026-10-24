@@ -272,14 +272,50 @@ inline void report() {
         static_cast<unsigned long>(sessionId), static_cast<unsigned long>(sessionCount), static_cast<unsigned long>(totalRecords),
         static_cast<unsigned long>(sessionRecords), static_cast<unsigned long>(totalBytes), static_cast<unsigned long>(remainingBytes));
 }
+// USB 导出统一处理连接暂态、发送背压与短写；底层队列接受不代表主机已收到。
+inline bool writeExportBytes(const char* data, size_t length) {
+    size_t offset = 0;
+    uint32_t progressed = millis();
+    while (offset < length) {
+        if (uint32_t(millis() - progressed) >= Configuration::recordingExportProgressTimeout) return false;
+        if (Serial) {
+            const int available = Serial.availableForWrite();
+            if (available > 0) {
+                size_t count = length - offset;
+                if (count > size_t(available)) count = size_t(available);
+                if (count > Configuration::recordingExportChunkBytes) count = Configuration::recordingExportChunkBytes;
+                const size_t written = Serial.write(reinterpret_cast<const uint8_t*>(data + offset), count);
+                if (written > count) return false;
+                if (written) {
+                    offset += written;
+                    progressed = millis();
+                    delay(0);
+                    continue;
+                }
+            }
+        }
+        delay(Configuration::recordingExportRetryInterval);
+    }
+    return true;
+}
+inline bool writeExportLine(const char* line, const char* prefix = "") {
+    return writeExportBytes(prefix, strlen(prefix)) && writeExportBytes(line, strlen(line)) &&
+        writeExportBytes("\r\n", 2);
+}
+inline void abortExport() {
+    event("export_aborted", "usb_export_timeout");
+    // 换行隔开可能只发出一半的行；完全断连时仅能保留板端事件，主机仍会超时。
+    writeExportLine("{\"event\":\"recording_error\",\"code\":\"usb_export_timeout\"}", "\r\n");
+}
 inline void exportAll() {
     event("export_begin");
     if (!mounted) { fail(Status::Unavailable, "storage_unavailable"); return; }
     File directory = LittleFS.open(Configuration::recordingDirectory);
     if (!directory || !directory.isDirectory()) { fail(Status::ReadFailed, "directory_unreadable"); return; }
-    Serial.printf("{\"event\":\"recording_export_begin\",\"format\":%u}\n", Configuration::recordingFormatVersion);
-    uint32_t exportedRecords = 0, exportedSessions = 0, incompleteRows = 0;
     char line[Configuration::recordingLineCapacity];
+    snprintf(line, sizeof(line), "{\"event\":\"recording_export_begin\",\"format\":%u}", Configuration::recordingFormatVersion);
+    if (!writeExportLine(line)) { directory.close(); abortExport(); return; }
+    uint32_t exportedRecords = 0, exportedSessions = 0, incompleteRows = 0;
     for (File file = directory.openNextFile(); file; file = directory.openNextFile()) {
         unsigned long identity = 0;
         int consumed = 0;
@@ -287,26 +323,25 @@ inline void exportAll() {
             consumed == 0 || file.name()[consumed] != 0) { file.close(); continue; }
         const auto headerResult = readLine(file, line);
         if (headerResult == LineResult::End || headerResult == LineResult::Incomplete) { ++incompleteRows; file.close(); continue; }
-        if (headerResult != LineResult::Complete) { file.close(); fail(Status::ReadFailed, "metadata_unreadable"); return; }
-        Serial.println(line);
+        if (headerResult != LineResult::Complete) { file.close(); directory.close(); fail(Status::ReadFailed, "metadata_unreadable"); return; }
+        if (!writeExportLine(line)) { file.close(); directory.close(); abortExport(); return; }
         ++exportedSessions;
         LineResult result;
         while ((result = readLine(file, line)) == LineResult::Complete) {
-            if (!Serial) { file.close(); event("export_aborted", "usb_disconnected"); return; }
-            if (line[0] == 'P' && line[1] == ',') {
-                Serial.print("recording_forecast,"); Serial.println(line + 2);
-            } else {
-                Serial.print("recording_row,"); Serial.println(line);
+            const bool forecast = line[0] == 'P' && line[1] == ',';
+            if (!writeExportLine(forecast ? line + 2 : line, forecast ? "recording_forecast," : "recording_row,")) {
+                file.close(); directory.close(); abortExport(); return;
             }
             ++exportedRecords;
         }
         file.close();
-        if (result == LineResult::TooLong) { fail(Status::ReadFailed, "record_unreadable"); return; }
+        if (result == LineResult::TooLong) { directory.close(); fail(Status::ReadFailed, "record_unreadable"); return; }
         if (result == LineResult::Incomplete) ++incompleteRows;
     }
     directory.close();
-    Serial.printf("{\"event\":\"recording_export_end\",\"records\":%lu,\"sessions\":%lu,\"incomplete_rows\":%lu}\n",
+    snprintf(line, sizeof(line), "{\"event\":\"recording_export_end\",\"records\":%lu,\"sessions\":%lu,\"incomplete_rows\":%lu}",
         static_cast<unsigned long>(exportedRecords), static_cast<unsigned long>(exportedSessions), static_cast<unsigned long>(incompleteRows));
+    if (!writeExportLine(line)) { abortExport(); return; }
     event("export_end");
 }
 #endif

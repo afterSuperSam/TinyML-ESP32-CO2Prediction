@@ -4,7 +4,7 @@
 
 // 集中管理接线、回放、控制预览与界面参数。
 namespace Configuration {
-constexpr char version[] = "1.12.0";
+constexpr char version[] = "1.12.1";
 constexpr bool predictionDefaultEnabled = true;
 constexpr char predictionSettingsNamespace[] = "air-predict";
 constexpr char predictionEnabledKey[] = "enabled";
@@ -65,6 +65,9 @@ constexpr uint32_t statisticsInterval = 2000;
 constexpr char recordingDirectory[] = "/recordings";
 constexpr uint32_t recordingReserveBytes = 16384;
 constexpr unsigned recordingLineCapacity = 768;
+constexpr uint32_t recordingExportProgressTimeout = 3000;
+constexpr uint32_t recordingExportRetryInterval = 5;
+constexpr unsigned recordingExportChunkBytes = 64;
 constexpr unsigned environmentCount = 4;
 constexpr const char* environmentNames[] = {"classroom", "bedroom", "outdoor", "enclosed"};
 constexpr const char* environmentLabels[] = {"教室", "卧室", "户外", "密闭"};
@@ -133,6 +136,9 @@ static_assert(predictionHistoryMinutes > 0 && predictionHistoryMinutes < history
     statisticsInterval > 0, "Invalid statistics window");
 static_assert(fanLevels[0] == 0 && fanLevels[0] < fanLevels[1] && fanLevels[1] < fanLevels[2] &&
     fanLevels[2] < fanLevels[3] && fanLevels[3] <= 100, "Invalid fan preview levels");
+static_assert(recordingExportRetryInterval > 0 && recordingExportRetryInterval < recordingExportProgressTimeout &&
+    recordingExportProgressTimeout <= 5000 && recordingExportChunkBytes > 0 && recordingExportChunkBytes <= 64,
+    "Invalid recording export configuration");
 static_assert(recordingDirectory[0] == '/' && sizeof(recordingDirectory) < 32 &&
     recordingReserveBytes >= 4096 && recordingLineCapacity >= 384 && recordingLineCapacity <= 1024 &&
     recordingFormatVersion >= 1 && recordingFormatVersion <= 4, "Invalid recording configuration");

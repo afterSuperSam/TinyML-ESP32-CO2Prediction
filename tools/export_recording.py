@@ -26,6 +26,7 @@ CSV_FIELDS = ("timestamp", "co2_ppm", "temperature_c", "humidity_pct", "valid", 
               *FORECAST_FIELDS[1:])
 ERROR_MESSAGES = {"storage_unavailable": "存储未初始化或挂载失败", "already_initialized": "存储已挂载，无需初始化",
                   "initialize_failed": "初始化存储失败", "storage_full": "存储空间不足", "write_failed": "写入失败",
+                  "usb_export_timeout": "板端 USB 导出发送停滞，导出已中止",
                   "record_unreadable": "记录无法读取", "metadata_unreadable": "场次信息无法读取", "clock_required": "场次未完成 USB 校时"}
 MAX_SERIAL_LINE_BYTES = 4096
 
@@ -209,8 +210,15 @@ def export(port, output, selected_session, timeout):
                     connection.reset_input_buffer()
                     connection.write(b"e")
                     for line in serial_lines(connection, timeout, raw_handle):
-                        if line.startswith("{") and '"recording_export_end"' in line:
-                            if json.loads(line).get("event") == "recording_export_end":
+                        if line.startswith("{") and ('"recording_error"' in line or '"recording_export_end"' in line):
+                            try:
+                                message = json.loads(line)
+                            except json.JSONDecodeError:
+                                continue
+                            if message.get("event") == "recording_error":
+                                code = message.get("code", "unknown")
+                                raise ValueError(ERROR_MESSAGES.get(code, f"板端存储错误：{code}"))
+                            if message.get("event") == "recording_export_end":
                                 break
             except (OSError, ValueError, serial.SerialException) as error:
                 receive_error = error

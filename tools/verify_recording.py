@@ -148,6 +148,25 @@ class ExportTests(unittest.TestCase):
             self.assertEqual(len(rows), 1)
             raw_path.unlink()
 
+    def test_board_error_reports_cause_before_timeout_and_preserves_evidence(self):
+        for code in ('usb_export_timeout', 'record_unreadable'):
+            for partial_line in ('', '{"event":"recording_sess'):
+                before_error = ('\n'.join(self.stream()[:-1]) + '\n' + partial_line + '\n').encode()
+                error_line = (json.dumps(dict(event='recording_error', code=code)) + '\n').encode()
+                payload = before_error + error_line
+                connection = SerialChunks([before_error, error_line])
+                with self.subTest(code=code, partial=bool(partial_line)), tempfile.TemporaryDirectory() as directory:
+                    output = Path(directory) / 'recording.csv'
+                    with patch.object(exporter.serial, 'Serial', return_value=connection), patch.object(exporter.time, 'monotonic', side_effect=[0] * 12 + [30]), patch.object(exporter.sys, 'stderr', new_callable=io.StringIO) as errors:
+                        with self.assertRaisesRegex(ValueError, exporter.ERROR_MESSAGES[code]):
+                            exporter.export('mock', output, None, 20)
+                    raw_path = Path(errors.getvalue().strip().removeprefix('原始 USB 数据：'))
+                    self.assertEqual(raw_path.read_bytes(), payload)
+                    self.assertTrue(connection.closed)
+                    self.assertFalse(output.exists())
+                    self.assertTrue(output.with_suffix('.csv.partial').exists())
+                    raw_path.unlink()
+
     def test_wrong_sequence_rejected(self):
         lines = self.stream(); lines[2] = lines[2].replace('recording_row,1,', 'recording_row,2,')
         with self.assertRaises(ValueError):
@@ -230,10 +249,20 @@ inline int esp_reset_reason() { return 3; }
 struct String : std::string { using std::string::string; String(std::string s):std::string(s){} };
 struct SerialMock {
  std::string output; bool connected=true;
- operator bool() const { return connected; }
- void print(const char* s) { output+=s; }
- void println(const char* s) { output+=s; output+='\n'; }
- void printf(const char* f, ...) { char b[2048]; va_list a; va_start(a,f); vsnprintf(b,sizeof(b),f,a); va_end(a); output+=b; }
+ size_t maximumWrite=2048, pauseAt=SIZE_MAX; std::string pauseOnText; uint64_t zeroWriteUntil=0; uint64_t pauseStarted=UINT64_MAX; unsigned pauseDuration=0;
+ bool ready() {
+  if((output.size()>=pauseAt || (!pauseOnText.empty() && output.find(pauseOnText)!=std::string::npos)) && pauseStarted==UINT64_MAX)pauseStarted=simulatedTime;
+  return connected && (pauseStarted==UINT64_MAX || simulatedTime-pauseStarted>=pauseDuration);
+ }
+ operator bool() { return ready(); }
+ int availableForWrite() { return ready()?2048:0; }
+ size_t write(const uint8_t* data,size_t size) {
+  if(!ready())return size; // HWCDC 在未连接分支报告 size，不能把它当作已交付。
+  const size_t count=simulatedTime<zeroWriteUntil?0:std::min(size,maximumWrite);output.append((const char*)data,count);return count;
+ }
+ void print(const char* s) { write((const uint8_t*)s,strlen(s)); }
+ void println(const char* s) { print(s);print("\n"); }
+ void printf(const char* f, ...) { char b[2048]; va_list a; va_start(a,f); vsnprintf(b,sizeof(b),f,a); va_end(a); print(b); }
 } inline Serial;
 struct EspMock { uint64_t getEfuseMac(){return 123;} } inline ESP;
 constexpr int PT_U8 = 1;
@@ -359,7 +388,43 @@ void verifyPredictionDiagnostics(){
  assert(Data::history[Configuration::historyCapacity-1].failureReason==Data::MinuteFailure::MissingMinute);
  puts("PASS: prediction NVS/default/reboot/failure, disabled CSV, immediate clearing, retained history, minute diagnostics, inference deduplication, unchanged quality gates");
 }
-int main(){
+bool verifyUsbExport(const char* scenario){
+ Serial.output.clear();Serial.maximumWrite=2048;Serial.pauseAt=SIZE_MAX;Serial.pauseStarted=UINT64_MAX;Serial.pauseDuration=0;
+ Serial.pauseOnText.clear();Serial.zeroWriteUntil=0;
+ const bool stopped=strstr(scenario,"stopped")!=nullptr;
+ if(stopped)Recording::stop();
+ const bool wasActive=Recording::active(), intent=Recording::resumeRequested;
+ std::map<std::string,std::string> preserved;
+ for(const auto& item:File::nodes)preserved[item.first]=item.second->content;
+ const auto started=simulatedTime;
+ if(!strcmp(scenario,"transient") || stopped){Serial.pauseAt=100;Serial.pauseDuration=30;}
+ if(!strcmp(scenario,"short_write"))Serial.maximumWrite=7;
+ if(!strcmp(scenario,"write_recovery"))Serial.zeroWriteUntil=simulatedTime+30;
+ if(!strcmp(scenario,"header_recovery")){Serial.pauseOnText="recording_session";Serial.pauseDuration=30;}
+ if(!strcmp(scenario,"end_recovery")){Serial.pauseOnText="recording_export_end";Serial.pauseDuration=30;}
+ const bool stalled=!strcmp(scenario,"stalled"), disconnected=!strcmp(scenario,"disconnected");
+ if(stalled)Serial.maximumWrite=0;
+ if(disconnected){Serial.pauseAt=100;Serial.pauseDuration=UINT32_MAX;}
+ Recording::exportAll();
+ const bool ended=Serial.output.find("recording_export_end")!=std::string::npos;
+ bool passed=false;
+ if(stalled || disconnected){
+  passed=!ended && simulatedTime>started && simulatedTime-started<10000;
+  passed=passed && File::nodes[Recording::currentPath]->content.find(",export_aborted,usb_export_timeout")!=std::string::npos;
+  passed=passed && File::nodes[Recording::currentPath]->content.find(",export_end,")==std::string::npos;
+ } else {
+  passed=ended && Serial.output.find("recording_row,")!=std::string::npos && Serial.output.find("recording_session")!=std::string::npos;
+  const std::string path=std::string("protocol-")+scenario+".log";
+  FILE* trace=nullptr;assert(fopen_s(&trace,path.c_str(),"wb")==0);
+  fwrite(Serial.output.data(),1,Serial.output.size(),trace);fclose(trace);
+ }
+ for(const auto& item:preserved)passed=passed && File::nodes[item.first]->content.find(item.second)==0;
+ passed=passed && Recording::active()==wasActive && Recording::resumeRequested==intent;
+ if(!passed)fprintf(stderr,"FAIL USB %s: end=%d elapsed=%llu output=%zu\n",scenario,ended,(unsigned long long)(simulatedTime-started),Serial.output.size());
+ else printf("PASS USB %s: elapsed=%llu\n",scenario,(unsigned long long)(simulatedTime-started));
+ return passed;
+}
+int main(int argc,char** argv){
  // 复现首次存储未格式化，用户初始化后立即开始记录的真实调用顺序。
  LittleFS.formatted=false;
  assert(!Recording::begin()); assert(Recording::settingsReady); assert(LittleFS.formatCalls==0);
@@ -396,6 +461,7 @@ int main(){
  assert(saved.find(",sensor_recovered,")!=std::string::npos);
  assert(saved.find(",measurement,\n")!=std::string::npos);
  assert(saved.find(",1000,0,,0,5,15,910.000,870.000,910.000,870.000,850.000,800.000,0,model,fan_assumption=nominal")!=std::string::npos);
+ if(argc>1)return verifyUsbExport(argv[1])?0:1;
  Recording::exportAll();assert(Recording::active());
  assert(Serial.output.find("recording_export_end")!=std::string::npos);
  // 模拟启动重载：保留旧文件，恢复用户意图并新建场次。
@@ -439,6 +505,14 @@ def native_test():
     batch = directory/'verify.cmd'
     batch.write_text(f'@echo off\ncall "{setup}" >nul\ncl /nologo /std:c++17 /EHsc /utf-8 /I. /I"{ROOT / "firmware"}" verify.cpp /Fe:verify.exe\nif errorlevel 1 exit /b 1\nverify.exe\n',encoding='utf-8')
     subprocess.run(['cmd','/c',str(batch)],cwd=directory,check=True)
+    failures=[]
+    for scenario in ('transient','short_write','stalled','disconnected','write_recovery','header_recovery','end_recovery','transient_stopped'):
+        result=subprocess.run([str(directory/'verify.exe'),scenario],cwd=directory)
+        if result.returncode:failures.append(scenario)
+        elif scenario not in ('stalled','disconnected'):
+            exporter.read_export((directory/f'protocol-{scenario}.log').read_text(encoding='utf-8').splitlines(),
+                                 csv.DictWriter(io.StringIO(), exporter.CSV_FIELDS))
+    if failures:raise AssertionError(f'USB export regressions failed: {failures}')
     target = io.StringIO()
     result = exporter.read_export((directory/'protocol.log').read_text(encoding='utf-8').splitlines(),
                                   csv.DictWriter(target, exporter.CSV_FIELDS))
